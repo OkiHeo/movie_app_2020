@@ -1,48 +1,28 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-function Food(props){
-  const { name, picture, ratings } = props;  // 구조 분해 할당. props에 포함된 데이터의 개수가 많아질수록 편하다.
-  return (
-    <div>
-      <img alt="" src={picture} />
-      <h2>I like {name}</h2>
-      <h4>{ratings}</h4>
-    </div>
-  );
-}
+class App extends React.Component{
+  state={
+    isLoading: true,    // 영화 데이터 로딩 상태(로딩 중: true)
+    movies: [],         // 이 곳에 로딩한 영화 정보를 저장.
+  };
 
+  // 컴포넌트 마운트 6초 후에 로딩 상태 변경.
+  componentDidMount(){
+    // 영화 데이터 로딩 완료!
+    setTimeout( () => {            // 6초 후에 isLoading state를 false로 바꿈.
+      this.setState({ isLoading: false});
+    }, 6000);
+  }
 
-Food.propTypes = {
-	name: PropTypes.string.isRequired,
-	picture: PropTypes.string.isRequired,
-	ratings: PropTypes.number,
-};
+  render(){
+    const {isLoading} = this.state;
 
-const foodILike = [
-  {
-    id: 1,
-    name: 'kimchi',
-    rating: 3,
-    image: 'http://image.auction.co.kr/itemimage/1b/45/1c/1b451c3fa6.jpg',
-  },
-  {
-    id: 2,
-    name: '순두부찌개',
-    rating: 4.8,
-    image: 'https://i.ytimg.com/vi/iCRj9VWDCt4/maxresdefault.jpg',
-  },
-];
-
-function App() {
-  return (
-    <div>
-      <h1>Hello</h1>
-      { foodILike.map( dish=>(
-        <Food id={dish.id} name={dish.name} picture={dish.image} ratings={dish.rating} />
-         )) }
-    </div>)
-  ;
+    return(
+      <div>
+        {isLoading ? 'Loading...' : 'We are ready'}
+      </div>
+    );
+  }
 }
 
 export default App;
