@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+import Movie from './Movie';
 
 class App extends React.Component{
   state={
@@ -6,20 +8,30 @@ class App extends React.Component{
     movies: [],         // 이 곳에 로딩한 영화 정보를 저장.
   };
 
+  getMovies = async() => {
+    const {data: {data: {movies},},} = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating');
+    this.setState({movies:movies, isLoading:false});
+  }
+  
   // 컴포넌트 마운트 6초 후에 로딩 상태 변경.
   componentDidMount(){
-    // 영화 데이터 로딩 완료!
-    setTimeout( () => {            // 6초 후에 isLoading state를 false로 바꿈.
-      this.setState({ isLoading: false});
-    }, 6000);
+    this.getMovies();
   }
 
   render(){
-    const {isLoading} = this.state;
+    const {isLoading, movies} = this.state;
 
     return(
       <div>
-        {isLoading ? 'Loading...' : 'We are ready'}
+        {isLoading ? 'Loading...' : movies.map( (movie)=>{
+          console.log(movie);
+          return <Movie key={movie.id}
+                        id={movie.id}
+                        year={movie.year}
+                        title={movie.title}
+                        summary={movie.summary}
+                        poster={movie.medium_cover_image} />;
+        })}
       </div>
     );
   }
